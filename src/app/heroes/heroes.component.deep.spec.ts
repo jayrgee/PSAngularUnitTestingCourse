@@ -5,14 +5,14 @@ import { HeroComponent } from "../hero/hero.component";
 import { of } from "rxjs";
 import { Directive, Input, NO_ERRORS_SCHEMA, input } from "@angular/core";
 import { By } from "@angular/platform-browser";
-import { RouterLink } from "@angular/router";
 
 // template for dealing with built-in directives
+// https://github.com/angular/angular.io/blob/master/public/docs/_examples/testing/ts/src/testing/router-stubs.ts
 @Directive({
   selector: '[routerLink]',
   host: { '(click)': 'onClick()' }
 })
-export class RouterLinkDirectiveStub {
+export class RouterLinkStubDirective {
   @Input('routerLink') linkParams: any;
   navigatedTo: any = null;
 
@@ -43,7 +43,7 @@ describe('HeroesComponent (deep tests)', () => {
             declarations: [
                 HeroesComponent,
                 HeroComponent,
-                RouterLinkDirectiveStub
+                RouterLinkStubDirective
             ],
             providers: [
                 {
@@ -117,15 +117,15 @@ describe('HeroesComponent (deep tests)', () => {
     })
 
     // test routerLink
-    fit('should have the correct route for the first hero', () => {
+    it('should have the correct route for the first hero', () => {
       mockHeroService.getHeroes.and.returnValue(of(HEROES));
       fixture.detectChanges();
       // in Angular a component is a subclass of a directive
       const heroComponentDEs = fixture.debugElement.queryAll(By.directive(HeroComponent));
 
       let routerLink = heroComponentDEs[0]
-        .query(By.directive(RouterLinkDirectiveStub))
-        .injector.get(RouterLinkDirectiveStub) // returns a handle for the actual router link directive stub instance
+        .query(By.directive(RouterLinkStubDirective))
+        .injector.get(RouterLinkStubDirective) // returns a handle for the actual router link directive stub instance
 
       // click on first anchor tag
       heroComponentDEs[0].query(By.css('a')).triggerEventHandler('click', null);
